@@ -15,12 +15,33 @@ steps:
 
   deploy:
     title: Deploy K-6 Operator
+    type: parallel
     stage: deploy
-    image: lyft/kustomizer
-    working_directory: ${{clone}}
-    commands:
-      - make install
-      - make deploy
+    steps:
+      useast1: &deploy
+        title: Deploy us-east-1
+        image: lyft/kustomizer
+        environment:
+          context=test-use1
+        working_directory: ${{clone}}
+        commands:
+          - make install
+          - make deploy
+      useast2:
+        title: Deploy us-east-2
+        environment:
+          context=test-use2
+        <<: *deploy
+      uswest1:
+        title: Deploy us-west-1
+        environment:
+          context=test-usw1
+        <<: *deploy
+      uswest2:
+        title: Deploy us-west-2
+        environment:
+          context=test-usw2
+        <<: *deploy
   when:
     branch:
       only:

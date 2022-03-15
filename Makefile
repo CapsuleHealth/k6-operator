@@ -1,5 +1,7 @@
 # Current Operator version
 VERSION ?= 0.0.7rc4
+# Kubernetes context
+CONTEXT = $(context)
 # Default bundle image tag
 BUNDLE_IMG ?= k6-controller-bundle:$(VERSION)
 # Options for 'bundle-build'
@@ -67,11 +69,11 @@ run: generate fmt vet manifests
 
 # Install CRDs into a cluster
 install: manifests kustomize
-	$(KUSTOMIZE) build config/crd | kubectl apply -f -
+	$(KUSTOMIZE) build config/crd | kubectl apply -f - --context=$(CONTEXT)
 
 # Uninstall CRDs from a cluster
 uninstall: manifests kustomize
-	$(KUSTOMIZE) build config/crd | kubectl delete -f -
+	$(KUSTOMIZE) build config/crd | kubectl delete -f - --context=$(CONTEXT)
 
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 deploy: manifests kustomize

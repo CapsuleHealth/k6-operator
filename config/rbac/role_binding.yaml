@@ -10,4 +10,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: k6-operator-controller
-    namespace: k6-operator-system
+    namespace: load-test

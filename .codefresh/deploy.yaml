@@ -1,0 +1,28 @@
+version: 1.0
+
+stages:
+  - clone
+  - deploy
+
+steps:
+  clone:
+    title: Cloning repository
+    stage: clone
+    type: git-clone
+    repo: "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}"
+    revision: "${{CF_BRANCH}}"
+    git: capsule
+
+  deploy:
+    title: Deploy K-6 Operator
+    stage: deploy
+    image: lyft/kustomizer
+    working_directory: ${{clone}}
+    commands:
+      - make install
+  when:
+    branch:
+      only:
+        - deploy
+
+  # notify:

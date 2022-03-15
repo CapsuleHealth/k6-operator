@@ -1,0 +1,13 @@
+README.md
+Makefile
+PROJECT
+LICENSE
+Dockerfile*
+.git**
+.gitignore
+.github**
+.yamllint.yaml
+assets**
+e2e**
+config**
+hack**

@@ -1,4 +1,6 @@
 ---
+namespace: load-test
+
 resources:
   - role.yaml
   - role_binding.yaml

@@ -25,6 +25,7 @@ steps:
           - context=test-use1
         working_directory: ${{clone}}
         commands:
+          - apk add --no-cache make
           - make install
           - make deploy
       useast2:

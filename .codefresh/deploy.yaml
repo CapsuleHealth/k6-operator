@@ -20,7 +20,7 @@ steps:
     steps:
       useast1: &deploy
         title: Deploy us-east-1
-        image: lyft/kustomizer
+        image: lyft/kustomizer:v3.3.0
         environment:
           - context=test-use1
         working_directory: ${{clone}}

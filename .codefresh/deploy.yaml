@@ -1,7 +1,16 @@
 version: 1.0
 
+indicators:
+  - environment: &env
+      GOBIN=${{CF_VOLUME_PATH}}/go/bin
+      GOPATH=${{CF_VOLUME_PATH}}/go
+      PATH=$PATH:$GOBIN
+  - working_directory: &dir ${{clone} 
+  - image: &image golang:1.17
+
 stages:
   - clone
+  - generate
   - deploy
 
 steps:
@@ -12,6 +21,17 @@ steps:
     repo: "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}"
     revision: "${{CF_BRANCH}}"
     git: capsule
+  
+  generate:
+    title: Generate Manifests
+    stage: generate
+    environment: *env
+    working_directory: *dir
+    image: *image
+    commands:
+      - make kubectl
+      - make kustomize
+      - make manifests
 
   deploy:
     title: Deploy K-6 Operator
@@ -20,10 +40,11 @@ steps:
     steps:
       useast1: &deploy
         title: Deploy us-east-1
-        image: lyft/kustomizer:v3.3.0
+        image: *image
+        <<: *env
         environment:
           - context=test-use1
-        working_directory: ${{clone}}
+        working_directory: *dir
         commands:
           - apk add --no-cache make
           - make install

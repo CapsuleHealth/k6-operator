@@ -78,11 +78,11 @@ uninstall: manifests kustomize
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 deploy: manifests kustomize
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default | kubectl apply -f -
+	$(KUSTOMIZE) build config/default | kubectl apply -f - --context=$(CONTEXT)
 
 # Delete operator from a cluster
 delete: manifests kustomize
-	$(KUSTOMIZE) build config/default | kubectl delete -f -
+	$(KUSTOMIZE) build config/default | kubectl delete -f - --context=$(CONTEXT)
 
 # Generate manifests e.g. CRD, RBAC etc.
 manifests: controller-gen
@@ -140,6 +140,16 @@ else
 KUSTOMIZE=$(shell which kustomize)
 endif
 
+kubectl:
+ifeq (, $(shell which kubectl))
+	@{ \
+	curl -L https://dl.k8s.io/release/v1.20.15/bin/linux/amd64/kubectl -o $(GOBIN)/kubectl
+	}
+KUBECTL=$(GOBIN)/kubectl
+else
+KUBECTL=$(shell which kubectl)
+endif
+
 # Generate bundle manifests and metadata, then validate generated files.
 .PHONY: bundle
 bundle: manifests
@@ -152,3 +162,5 @@ bundle: manifests
 .PHONY: bundle-build
 bundle-build:
 	docker build -f bundle.Dockerfile -t $(BUNDLE_IMG) .
+
+.PHONY: kubectl

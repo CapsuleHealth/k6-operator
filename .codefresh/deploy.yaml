@@ -41,9 +41,9 @@ steps:
       useast1: &deploy
         title: Deploy us-east-1
         image: *image
-        <<: *env
         environment:
           - context=test-use1
+          <<: *env
         working_directory: *dir
         commands:
           - apk add --no-cache make

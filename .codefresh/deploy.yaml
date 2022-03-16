@@ -43,7 +43,7 @@ steps:
         image: *image
         environment:
           - context=test-use1
-          <<: *env
+          *env
         working_directory: *dir
         commands:
           - apk add --no-cache make

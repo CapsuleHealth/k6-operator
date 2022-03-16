@@ -144,7 +144,8 @@ kubectl:
 ifeq (, $(shell which kubectl))
 	@{ \
 	set -e; \
-	curl -L https://dl.k8s.io/release/v1.20.15/bin/linux/amd64/kubectl -o $(GOBIN)/kubectl;
+	curl -L https://dl.k8s.io/release/v1.20.15/bin/linux/amd64/kubectl -o $(GOBIN)/kubectl; \
+	chmod +x $(GOBIN)/kubectl; \
 	}
 KUBECTL=$(GOBIN)/kubectl
 else
